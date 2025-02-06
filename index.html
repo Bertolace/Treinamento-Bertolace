@@ -49,36 +49,31 @@
   <img src="imagens/logo completa fundo branco.jpeg" alt="Logo Bertolace" class="logo">
   <h1>Bem-vindo à Plataforma de Treinamento Bertolace!</h1>
   <p>Aqui você pode acessar os vídeos de treinamento de acordo com sua área.</p>
-  
-  <!-- Links para área do financeiro -->
-  <a href="javascript:void(0);" class="btn" onclick="playVideo('videos/financeiro/Iniciante%20Excel2025.mp4')">Acessar Vídeo Financeiro</a>
-  
-  <!-- Links para área de RH -->
-  <a href="javascript:void(0);" class="btn" onclick="playVideo('videos/rh/video_exemplo_rh.mp4')">Acessar Vídeo RH</a>
-  
-  <!-- Adicione outros links para outras áreas se necessário -->
 
-  <!-- Video Player (invisível por padrão, só aparece quando o botão é clicado) -->
+  <!-- Botões para acessar vídeos de diferentes áreas -->
+  <a href="javascript:void(0);" class="btn" onclick="playVideo('videos/financeiro/Iniciante%20Excel2025.mp4')">Acessar Vídeo Financeiro</a>
+
+  <a href="javascript:void(0);" class="btn" onclick="playVideo('videos/rh/rh%20introducao.mp4')">Acessar Vídeo RH</a>
+
+  <!-- Se houver mais áreas, adicione aqui, por exemplo: -->
+  <a href="javascript:void(0);" class="btn" onclick="playVideo('videos/logistica/video_logistica.mp4')">Acessar Vídeo Logística</a>
+
+  <!-- Se houver mais áreas, continue assim para Vendas, etc -->
+  <!-- <a href="javascript:void(0);" class="btn" onclick="playVideo('videos/vendas/video_vendas.mp4')">Acessar Vídeo Vendas</a> -->
+
+  <!-- Player de vídeo invisível até o clique -->
   <div id="videoPlayer">
-    <video controls id="player">
+    <video controls>
       <source id="videoSource" type="video/mp4">
       Seu navegador não suporta o elemento de vídeo.
     </video>
   </div>
 
   <script>
-    // Função para carregar e exibir o vídeo correto
     function playVideo(videoPath) {
-      var player = document.getElementById('player');
-      var videoSource = document.getElementById('videoSource');
-      var videoPlayer = document.getElementById('videoPlayer');
-
-      // Atualiza a URL do vídeo
-      videoSource.src = "https://raw.githubusercontent.com/Bertolace/Treinamento-Bertolace/main/" + videoPath;
-      
-      // Atualiza o player e exibe-o
-      player.load();
-      videoPlayer.style.display = 'block';
+      document.getElementById('videoSource').src = 'https://raw.githubusercontent.com/Bertolace/Treinamento-Bertolace/main/' + videoPath;
+      document.getElementById('videoPlayer').style.display = 'block';
+      document.querySelector('video').load();
     }
   </script>
 </body>
