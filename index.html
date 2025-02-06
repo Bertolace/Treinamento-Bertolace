@@ -43,16 +43,16 @@
       width: 80%;
       max-width: 800px;
     }
-    #questionnaire, #descriptionForm {
+    #questionario {
       display: none;
       margin-top: 20px;
     }
-    #descriptionForm textarea {
-      width: 80%;
-      height: 100px;
-      margin: 10px 0;
+    input[type="text"] {
       padding: 10px;
       font-size: 16px;
+      margin: 10px 0;
+      width: 80%;
+      max-width: 400px;
     }
   </style>
 </head>
@@ -63,117 +63,48 @@
 
   <!-- Botões para acessar vídeos de diferentes áreas -->
   <a href="javascript:void(0);" class="btn" onclick="playVideo('videos/financeiro/Iniciante%20Excel2025.mp4')">Acessar Vídeo Financeiro</a>
-
   <a href="javascript:void(0);" class="btn" onclick="playVideo('videos/rh/rh%20introducao.mp4')">Acessar Vídeo RH</a>
 
   <!-- Player de vídeo invisível até o clique -->
   <div id="videoPlayer">
-    <video id="videoElement" controls>
+    <video id="video" controls>
       <source id="videoSource" type="video/mp4">
       Seu navegador não suporta o elemento de vídeo.
     </video>
   </div>
 
-  <!-- Formulário de descrição (aparece na metade do vídeo) -->
-  <div id="descriptionForm">
-    <h2>Descreva o que você entendeu até agora sobre o vídeo:</h2>
-    <textarea id="descriptionText"></textarea><br>
-    <button class="btn" onclick="submitDescription()">Enviar Resposta</button>
-  </div>
-
-  <!-- Questionário (invisível até o vídeo chegar ao momento correto) -->
-  <div id="questionnaire">
-    <h2>Questionário</h2>
-    <p id="questionText"></p>
-    <form id="quizForm">
-      <input type="radio" id="answer1" name="answer" value="1"><label for="answer1">Resposta 1</label><br>
-      <input type="radio" id="answer2" name="answer" value="2"><label for="answer2">Resposta 2</label><br>
-      <input type="radio" id="answer3" name="answer" value="3"><label for="answer3">Resposta 3</label><br>
-      <button type="button" class="btn" onclick="submitAnswer()">Enviar Resposta</button>
-    </form>
+  <!-- Formulário para questionário -->
+  <div id="questionario">
+    <p>Descreva o que você entendeu até agora sobre o vídeo:</p>
+    <input type="text" id="resposta" placeholder="Sua resposta">
+    <br>
+    <button class="btn" onclick="continuarVideo()">Continuar Vídeo</button>
   </div>
 
   <script>
-    let videoElement;
-    let currentVideo;
-    let pauseTimes = [5, 15]; // Array com os tempos de pausa (em segundos)
-    let currentQuestionIndex = 0;
-    let questions = [
-      { text: "Qual é a primeira etapa do processo financeiro?", answers: ["Analisar fluxo de caixa", "Realizar pagamento", "Fechar o mês"] },
-      { text: "Qual é a principal função do setor de RH?", answers: ["Contratar", "Gerenciar benefícios", "Realizar treinamentos"] }
-    ];
+    let questionarioExibido = false; // Controle para exibir o questionário uma vez
 
     function playVideo(videoPath) {
-      currentVideo = videoPath;
       document.getElementById('videoSource').src = 'https://raw.githubusercontent.com/Bertolace/Treinamento-Bertolace/main/' + videoPath;
-      videoElement = document.getElementById('videoElement');
-      videoElement.load();
+      const video = document.getElementById('video');
       document.getElementById('videoPlayer').style.display = 'block';
-      document.getElementById('questionnaire').style.display = 'none';
-      document.getElementById('descriptionForm').style.display = 'none';
-      videoElement.play();
+      video.load();
+      video.play();
 
-      videoElement.ontimeupdate = function() {
-        checkPauseTime(videoElement.currentTime);
-      };
-    }
-
-    function checkPauseTime(currentTime) {
-      if (pauseTimes[currentQuestionIndex] && currentTime >= pauseTimes[currentQuestionIndex]) {
-        videoElement.pause();
-        if (currentQuestionIndex === 0) {
-          showDescriptionForm();
-        } else {
-          showQuestion(currentQuestionIndex);
+      // Evento para mostrar o questionário quando o vídeo atingir metade do tempo
+      video.addEventListener('timeupdate', function() {
+        if (video.currentTime >= video.duration / 2 && !questionarioExibido) {
+          document.getElementById('questionario').style.display = 'block';
+          questionarioExibido = true;
+          video.pause(); // Pausa o vídeo
         }
-      }
-    }
-
-    function showDescriptionForm() {
-      document.getElementById('descriptionForm').style.display = 'block';
-    }
-
-    function submitDescription() {
-      let description = document.getElementById('descriptionText').value;
-      if (description) {
-        alert('Sua resposta foi registrada: ' + description);
-        currentQuestionIndex++;
-        if (currentQuestionIndex < questions.length) {
-          videoElement.play();
-        } else {
-          alert('Você completou o questionário!');
-        }
-        document.getElementById('descriptionForm').style.display = 'none';
-      } else {
-        alert('Por favor, descreva o que você entendeu.');
-      }
-    }
-
-    function showQuestion(index) {
-      document.getElementById('questionText').innerText = questions[index].text;
-      const answers = questions[index].answers;
-      const answerOptions = document.querySelectorAll('input[type="radio"]');
-      answerOptions.forEach((option, i) => {
-        option.nextElementSibling.innerText = answers[i];
-        option.checked = false;
       });
-      document.getElementById('questionnaire').style.display = 'block';
     }
 
-    function submitAnswer() {
-      const selectedAnswer = document.querySelector('input[name="answer"]:checked');
-      if (selectedAnswer) {
-        alert('Resposta registrada: ' + selectedAnswer.nextElementSibling.innerText);
-        currentQuestionIndex++;
-        if (currentQuestionIndex < questions.length) {
-          videoElement.play();
-        } else {
-          alert('Você completou o questionário!');
-        }
-        document.getElementById('questionnaire').style.display = 'none';
-      } else {
-        alert('Por favor, selecione uma resposta.');
-      }
+    function continuarVideo() {
+      const video = document.getElementById('video');
+      document.getElementById('questionario').style.display = 'none'; // Esconde o questionário
+      video.play(); // Continua o vídeo
     }
   </script>
 </body>
