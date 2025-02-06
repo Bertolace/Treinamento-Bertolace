@@ -34,13 +34,32 @@
       max-width: 200px;
       margin-bottom: 20px;
     }
+    #videoPlayer {
+      display: none;
+      margin-top: 20px;
+    }
+    video {
+      width: 80%;
+      max-width: 800px;
+    }
   </style>
 </head>
 <body>
   <img src="imagens/logo completa fundo branco.jpeg" alt="Logo Bertolace" class="logo">
   <h1>Bem-vindo à Plataforma de Treinamento Bertolace!</h1>
   <p>Aqui você pode acessar os vídeos de treinamento.</p>
-  <a href="CAMINHO_DO_VIDEO_AQUI" class="btn">Acessar Vídeo de Treinamento</a>
+
+  <!-- Botão que exibe o vídeo -->
+  <button class="btn" onclick="document.getElementById('videoPlayer').style.display='block';">Acessar Vídeo de Treinamento</button>
+
+  <!-- Video Player (invisível por padrão, só aparece quando o botão é clicado) -->
+  <div id="videoPlayer">
+    <video controls>
+      <source src="https://raw.githubusercontent.com/Bertolace/Treinamento-Bertolace/main/videos/financeiro/Iniciante%20Excel2025.mp4" type="video/mp4">
+      Seu navegador não suporta o elemento de vídeo.
+    </video>
+  </div>
 </body>
 </html>
+
 
