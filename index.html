@@ -18,7 +18,7 @@
       color: #555;
     }
     .btn {
-      background-color: #ff0000; /* Cor de fundo do botão */
+      background-color: #ff0000;
       color: white;
       padding: 15px 30px;
       font-size: 18px;
@@ -26,10 +26,9 @@
       border-radius: 5px;
       cursor: pointer;
       text-decoration: none;
-      margin: 10px;
     }
     .btn:hover {
-      background-color: #cc0000; /* Cor do botão ao passar o mouse */
+      background-color: #cc0000;
     }
     .logo {
       max-width: 200px;
@@ -43,16 +42,9 @@
       width: 80%;
       max-width: 800px;
     }
-    #questionario {
+    #questionForm {
       display: none;
       margin-top: 20px;
-    }
-    input[type="text"] {
-      padding: 10px;
-      font-size: 16px;
-      margin: 10px 0;
-      width: 80%;
-      max-width: 400px;
     }
   </style>
 </head>
@@ -61,52 +53,68 @@
   <h1>Bem-vindo à Plataforma de Treinamento Bertolace!</h1>
   <p>Aqui você pode acessar os vídeos de treinamento de acordo com sua área.</p>
 
-  <!-- Botões para acessar vídeos de diferentes áreas -->
   <a href="javascript:void(0);" class="btn" onclick="playVideo('videos/financeiro/Iniciante%20Excel2025.mp4')">Acessar Vídeo Financeiro</a>
   <a href="javascript:void(0);" class="btn" onclick="playVideo('videos/rh/rh%20introducao.mp4')">Acessar Vídeo RH</a>
+  <a href="javascript:void(0);" class="btn" onclick="playVideo('videos/logistica/video_logistica.mp4')">Acessar Vídeo Logística</a>
 
-  <!-- Player de vídeo invisível até o clique -->
   <div id="videoPlayer">
-    <video id="video" controls>
+    <video controls>
       <source id="videoSource" type="video/mp4">
       Seu navegador não suporta o elemento de vídeo.
     </video>
   </div>
 
-  <!-- Formulário para questionário -->
-  <div id="questionario">
-    <p>Descreva o que você entendeu até agora sobre o vídeo:</p>
-    <input type="text" id="resposta" placeholder="Sua resposta">
-    <br>
-    <button class="btn" onclick="continuarVideo()">Continuar Vídeo</button>
+  <div id="questionForm">
+    <h2>Descreva o que você entendeu até agora sobre o vídeo:</h2>
+    <input type="text" id="userName" placeholder="Seu nome" required><br><br>
+    <textarea id="response" rows="4" cols="50" placeholder="Sua resposta"></textarea><br><br>
+    <button class="btn" onclick="submitForm()">Enviar Resposta</button>
   </div>
 
   <script>
-    let questionarioExibido = false; // Controle para exibir o questionário uma vez
-
     function playVideo(videoPath) {
       document.getElementById('videoSource').src = 'https://raw.githubusercontent.com/Bertolace/Treinamento-Bertolace/main/' + videoPath;
-      const video = document.getElementById('video');
       document.getElementById('videoPlayer').style.display = 'block';
-      video.load();
-      video.play();
-
-      // Evento para mostrar o questionário quando o vídeo atingir a metade do tempo
-      video.addEventListener('timeupdate', function() {
-        if (video.currentTime >= video.duration / 2 && !questionarioExibido) {
-          questionarioExibido = true; // Garantir que o questionário apareça apenas uma vez
-          setTimeout(function() { // Garantir que o questionário seja exibido apenas quando o vídeo atingir a metade
-            document.getElementById('questionario').style.display = 'block';
-            video.pause(); // Pausa o vídeo até o formulário ser preenchido
-          }, 100); // Aguarda 100ms após o vídeo atingir a metade do tempo
+      document.querySelector('video').load();
+      
+      // Pausa o vídeo na metade para mostrar o formulário
+      var video = document.querySelector('video');
+      video.ontimeupdate = function() {
+        if (video.currentTime >= video.duration / 2) {
+          video.pause();  // Pausa o vídeo na metade
+          document.getElementById('questionForm').style.display = 'block';  // Exibe o formulário
         }
-      });
+      };
     }
 
-    function continuarVideo() {
-      const video = document.getElementById('video');
-      document.getElementById('questionario').style.display = 'none'; // Esconde o questionário
-      video.play(); // Continua o vídeo
+    function submitForm() {
+      var name = document.getElementById('userName').value;
+      var formData = document.getElementById('response').value;
+      
+      if (name && formData) {
+        // ID da sua planilha
+        var sheetId = '1hEE-HkebWSLhQHKTqceOGACyQbIPPNyRP92-YSlzvWQ';
+
+        var scriptURL = 'https://script.google.com/macros/s/SEU_SCRIPT_ID/exec'; // Substitua SEU_SCRIPT_ID pelo seu ID de script
+
+        fetch(scriptURL, {
+          method: 'POST',
+          body: new URLSearchParams({
+            'name': name,
+            'response': formData,
+            'sheetId': sheetId,
+          }),
+        }).then(response => {
+          if (response.ok) {
+            alert('Resposta enviada com sucesso!');
+            document.getElementById('questionForm').style.display = 'none';  // Esconde o formulário
+          } else {
+            alert('Erro ao enviar a resposta');
+          }
+        });
+      } else {
+        alert('Por favor, preencha todos os campos');
+      }
     }
   </script>
 </body>
