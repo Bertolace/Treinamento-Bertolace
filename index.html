@@ -86,6 +86,7 @@
       
       document.getElementById("videoPlayer").style.display = "block";
       video.load();
+      video.play();
 
       video.addEventListener("timeupdate", function () {
         let halfway = video.duration / 2;
@@ -98,20 +99,15 @@
     }
 
     function submitAnswer() {
-      let name = document.getElementById("employeeName").value;
-      let response = document.getElementById("response").value;
+      let name = document.getElementById("employeeName").value.trim();
+      let response = document.getElementById("response").value.trim();
 
-      fetch("https://script.google.com/macros/s/YOUR_GOOGLE_SCRIPT_ID/exec", {
+      if (name === "" || response === "") {
+        alert("Por favor, preencha seu nome e a resposta antes de enviar.");
+        return;
+      }
+
+      fetch("https://script.google.com/macros/s/SEU_ID_DO_SCRIPT/exec", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `name=${encodeURIComponent(name)}&response=${encodeURIComponent(response)}`
-      }).then(() => {
-        alert("Resposta enviada!");
-        document.getElementById("questionForm").style.display = "none";
-        document.getElementById("trainingVideo").play();
-      });
-    }
-  </script>
-
-</body>
-</html>
+        body: `name=${en
