@@ -43,6 +43,17 @@
       width: 80%;
       max-width: 800px;
     }
+    #questionnaire, #descriptionForm {
+      display: none;
+      margin-top: 20px;
+    }
+    #descriptionForm textarea {
+      width: 80%;
+      height: 100px;
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 16px;
+    }
   </style>
 </head>
 <body>
@@ -55,25 +66,114 @@
 
   <a href="javascript:void(0);" class="btn" onclick="playVideo('videos/rh/rh%20introducao.mp4')">Acessar Vídeo RH</a>
 
-  <!-- Se houver mais áreas, adicione aqui, por exemplo: -->
-  <a href="javascript:void(0);" class="btn" onclick="playVideo('videos/logistica/video_logistica.mp4')">Acessar Vídeo Logística</a>
-
-  <!-- Se houver mais áreas, continue assim para Vendas, etc -->
-  <!-- <a href="javascript:void(0);" class="btn" onclick="playVideo('videos/vendas/video_vendas.mp4')">Acessar Vídeo Vendas</a> -->
-
   <!-- Player de vídeo invisível até o clique -->
   <div id="videoPlayer">
-    <video controls>
+    <video id="videoElement" controls>
       <source id="videoSource" type="video/mp4">
       Seu navegador não suporta o elemento de vídeo.
     </video>
   </div>
 
+  <!-- Formulário de descrição (aparece na metade do vídeo) -->
+  <div id="descriptionForm">
+    <h2>Descreva o que você entendeu até agora sobre o vídeo:</h2>
+    <textarea id="descriptionText"></textarea><br>
+    <button class="btn" onclick="submitDescription()">Enviar Resposta</button>
+  </div>
+
+  <!-- Questionário (invisível até o vídeo chegar ao momento correto) -->
+  <div id="questionnaire">
+    <h2>Questionário</h2>
+    <p id="questionText"></p>
+    <form id="quizForm">
+      <input type="radio" id="answer1" name="answer" value="1"><label for="answer1">Resposta 1</label><br>
+      <input type="radio" id="answer2" name="answer" value="2"><label for="answer2">Resposta 2</label><br>
+      <input type="radio" id="answer3" name="answer" value="3"><label for="answer3">Resposta 3</label><br>
+      <button type="button" class="btn" onclick="submitAnswer()">Enviar Resposta</button>
+    </form>
+  </div>
+
   <script>
+    let videoElement;
+    let currentVideo;
+    let pauseTimes = [5, 15]; // Array com os tempos de pausa (em segundos)
+    let currentQuestionIndex = 0;
+    let questions = [
+      { text: "Qual é a primeira etapa do processo financeiro?", answers: ["Analisar fluxo de caixa", "Realizar pagamento", "Fechar o mês"] },
+      { text: "Qual é a principal função do setor de RH?", answers: ["Contratar", "Gerenciar benefícios", "Realizar treinamentos"] }
+    ];
+
     function playVideo(videoPath) {
+      currentVideo = videoPath;
       document.getElementById('videoSource').src = 'https://raw.githubusercontent.com/Bertolace/Treinamento-Bertolace/main/' + videoPath;
+      videoElement = document.getElementById('videoElement');
+      videoElement.load();
       document.getElementById('videoPlayer').style.display = 'block';
-      document.querySelector('video').load();
+      document.getElementById('questionnaire').style.display = 'none';
+      document.getElementById('descriptionForm').style.display = 'none';
+      videoElement.play();
+
+      videoElement.ontimeupdate = function() {
+        checkPauseTime(videoElement.currentTime);
+      };
+    }
+
+    function checkPauseTime(currentTime) {
+      if (pauseTimes[currentQuestionIndex] && currentTime >= pauseTimes[currentQuestionIndex]) {
+        videoElement.pause();
+        if (currentQuestionIndex === 0) {
+          showDescriptionForm();
+        } else {
+          showQuestion(currentQuestionIndex);
+        }
+      }
+    }
+
+    function showDescriptionForm() {
+      document.getElementById('descriptionForm').style.display = 'block';
+    }
+
+    function submitDescription() {
+      let description = document.getElementById('descriptionText').value;
+      if (description) {
+        alert('Sua resposta foi registrada: ' + description);
+        currentQuestionIndex++;
+        if (currentQuestionIndex < questions.length) {
+          videoElement.play();
+        } else {
+          alert('Você completou o questionário!');
+        }
+        document.getElementById('descriptionForm').style.display = 'none';
+      } else {
+        alert('Por favor, descreva o que você entendeu.');
+      }
+    }
+
+    function showQuestion(index) {
+      document.getElementById('questionText').innerText = questions[index].text;
+      const answers = questions[index].answers;
+      const answerOptions = document.querySelectorAll('input[type="radio"]');
+      answerOptions.forEach((option, i) => {
+        option.nextElementSibling.innerText = answers[i];
+        option.checked = false;
+      });
+      document.getElementById('questionnaire').style.display = 'block';
+    }
+
+    function submitAnswer() {
+      const selectedAnswer = document.querySelector('input[name="answer"]:checked');
+      if (selectedAnswer) {
+        alert('Resposta registrada: ' + selectedAnswer.nextElementSibling.innerText);
+        currentQuestionIndex++;
+        if (currentQuestionIndex < questions.length) {
+          videoElement.play();
+        } else {
+          alert('Você completou o questionário!');
+        }
+        document.getElementById('questionnaire').style.display = 'none';
+      } else {
+        alert('Por favor, selecione uma resposta.');
+      }
     }
   </script>
 </body>
