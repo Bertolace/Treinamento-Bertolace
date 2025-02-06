@@ -26,6 +26,7 @@
       border-radius: 5px;
       cursor: pointer;
       text-decoration: none;
+      margin: 10px;
     }
     .btn:hover {
       background-color: #cc0000; /* Cor do botão ao passar o mouse */
@@ -47,19 +48,38 @@
 <body>
   <img src="imagens/logo completa fundo branco.jpeg" alt="Logo Bertolace" class="logo">
   <h1>Bem-vindo à Plataforma de Treinamento Bertolace!</h1>
-  <p>Aqui você pode acessar os vídeos de treinamento.</p>
-
-  <!-- Botão que exibe o vídeo -->
-  <button class="btn" onclick="document.getElementById('videoPlayer').style.display='block';">Acessar Vídeo de Treinamento</button>
+  <p>Aqui você pode acessar os vídeos de treinamento de acordo com sua área.</p>
+  
+  <!-- Links para área do financeiro -->
+  <a href="javascript:void(0);" class="btn" onclick="playVideo('videos/financeiro/Iniciante%20Excel2025.mp4')">Acessar Vídeo Financeiro</a>
+  
+  <!-- Links para área de RH -->
+  <a href="javascript:void(0);" class="btn" onclick="playVideo('videos/rh/video_exemplo_rh.mp4')">Acessar Vídeo RH</a>
+  
+  <!-- Adicione outros links para outras áreas se necessário -->
 
   <!-- Video Player (invisível por padrão, só aparece quando o botão é clicado) -->
   <div id="videoPlayer">
-    <video controls>
-      <source src="https://raw.githubusercontent.com/Bertolace/Treinamento-Bertolace/main/videos/financeiro/Iniciante%20Excel2025.mp4" type="video/mp4">
+    <video controls id="player">
+      <source id="videoSource" type="video/mp4">
       Seu navegador não suporta o elemento de vídeo.
     </video>
   </div>
+
+  <script>
+    // Função para carregar e exibir o vídeo correto
+    function playVideo(videoPath) {
+      var player = document.getElementById('player');
+      var videoSource = document.getElementById('videoSource');
+      var videoPlayer = document.getElementById('videoPlayer');
+
+      // Atualiza a URL do vídeo
+      videoSource.src = "https://raw.githubusercontent.com/Bertolace/Treinamento-Bertolace/main/" + videoPath;
+      
+      // Atualiza o player e exibe-o
+      player.load();
+      videoPlayer.style.display = 'block';
+    }
+  </script>
 </body>
 </html>
-
-
