@@ -91,12 +91,14 @@
       video.load();
       video.play();
 
-      // Evento para mostrar o questionário quando o vídeo atingir metade do tempo
+      // Evento para mostrar o questionário quando o vídeo atingir a metade do tempo
       video.addEventListener('timeupdate', function() {
         if (video.currentTime >= video.duration / 2 && !questionarioExibido) {
-          document.getElementById('questionario').style.display = 'block';
-          questionarioExibido = true;
-          video.pause(); // Pausa o vídeo
+          questionarioExibido = true; // Garantir que o questionário apareça apenas uma vez
+          setTimeout(function() { // Garantir que o questionário seja exibido apenas quando o vídeo atingir a metade
+            document.getElementById('questionario').style.display = 'block';
+            video.pause(); // Pausa o vídeo até o formulário ser preenchido
+          }, 100); // Aguarda 100ms após o vídeo atingir a metade do tempo
         }
       });
     }
