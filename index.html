@@ -59,8 +59,8 @@
   <h1>Bem-vindo à Plataforma de Treinamento Bertolace!</h1>
   <p>Aqui você pode acessar os vídeos de treinamento de acordo com sua área.</p>
 
-  <a href="javascript:void(0);" class="btn" onclick="playVideo('videos/financeiro/Iniciante%20Excel2025.mp4')">Acessar Vídeo Financeiro</a>
-  <a href="javascript:void(0);" class="btn" onclick="playVideo('videos/rh/rh%20introducao.mp4')">Acessar Vídeo RH</a>
+  <button class="btn" onclick="playVideo('videos/financeiro/Iniciante%20Excel2025.mp4')">Acessar Vídeo Financeiro</button>
+  <button class="btn" onclick="playVideo('videos/rh/rh%20introducao.mp4')">Acessar Vídeo RH</button>
 
   <div id="videoPlayer">
     <video controls id="trainingVideo">
@@ -82,7 +82,7 @@
     function playVideo(videoPath) {
       const video = document.getElementById("trainingVideo");
       const videoSource = document.getElementById("videoSource");
-      videoSource.src = 'https://raw.githubusercontent.com/Bertolace/Treinamento-Bertolace/main/' + videoPath;
+      videoSource.src = videoPath;
       
       document.getElementById("videoPlayer").style.display = "block";
       video.load();
@@ -99,15 +99,20 @@
     }
 
     function submitAnswer() {
-      let name = document.getElementById("employeeName").value.trim();
-      let response = document.getElementById("response").value.trim();
+      let name = document.getElementById("employeeName").value;
+      let response = document.getElementById("response").value;
 
-      if (name === "" || response === "") {
-        alert("Por favor, preencha seu nome e a resposta antes de enviar.");
-        return;
-      }
-
-      fetch("https://script.google.com/macros/s/SEU_ID_DO_SCRIPT/exec", {
+      fetch("https://script.google.com/macros/s/1hEE-HkebWSLhQHKTqceOGACyQbIPPNyRP92-YSlzvWQ/exec", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `name=${en
+        body: `name=${encodeURIComponent(name)}&response=${encodeURIComponent(response)}`
+      }).then(() => {
+        alert("Resposta enviada!");
+        document.getElementById("questionForm").style.display = "none";
+        document.getElementById("trainingVideo").play();
+      });
+    }
+  </script>
+
+</body>
+</html>
