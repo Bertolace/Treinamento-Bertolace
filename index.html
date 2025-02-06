@@ -26,6 +26,7 @@
       border-radius: 5px;
       cursor: pointer;
       text-decoration: none;
+      margin: 10px;
     }
     .btn:hover {
       background-color: #cc0000;
@@ -44,7 +45,6 @@
     }
     #questionForm {
       display: none;
-      margin-top: 20px;
     }
   </style>
 </head>
@@ -55,7 +55,6 @@
 
   <a href="javascript:void(0);" class="btn" onclick="playVideo('videos/financeiro/Iniciante%20Excel2025.mp4')">Acessar Vídeo Financeiro</a>
   <a href="javascript:void(0);" class="btn" onclick="playVideo('videos/rh/rh%20introducao.mp4')">Acessar Vídeo RH</a>
-  <a href="javascript:void(0);" class="btn" onclick="playVideo('videos/logistica/video_logistica.mp4')">Acessar Vídeo Logística</a>
 
   <div id="videoPlayer">
     <video controls>
@@ -64,58 +63,50 @@
     </video>
   </div>
 
+  <!-- Formulário de perguntas -->
   <div id="questionForm">
-    <h2>Descreva o que você entendeu até agora sobre o vídeo:</h2>
-    <input type="text" id="userName" placeholder="Seu nome" required><br><br>
-    <textarea id="response" rows="4" cols="50" placeholder="Sua resposta"></textarea><br><br>
-    <button class="btn" onclick="submitForm()">Enviar Resposta</button>
+    <h3>Descreva o que você entendeu até agora sobre o vídeo:</h3>
+    <form id="formulario">
+      <label for="name">Nome do Funcionário:</label>
+      <input type="text" id="name" name="name" required><br><br>
+      <label for="answer">Resposta:</label><br>
+      <textarea id="answer" name="answer" rows="4" cols="50" required></textarea><br><br>
+      <button type="button" class="btn" onclick="submitForm()">Enviar Resposta</button>
+    </form>
   </div>
 
   <script>
+    let videoElement = document.querySelector('video');
+
     function playVideo(videoPath) {
       document.getElementById('videoSource').src = 'https://raw.githubusercontent.com/Bertolace/Treinamento-Bertolace/main/' + videoPath;
       document.getElementById('videoPlayer').style.display = 'block';
       document.querySelector('video').load();
-      
-      // Pausa o vídeo na metade para mostrar o formulário
-      var video = document.querySelector('video');
-      video.ontimeupdate = function() {
-        if (video.currentTime >= video.duration / 2) {
-          video.pause();  // Pausa o vídeo na metade
-          document.getElementById('questionForm').style.display = 'block';  // Exibe o formulário
-        }
-      };
+      videoElement.play();
+      setTimeout(function() {
+        showForm();
+      }, videoElement.duration / 2 * 1000); // Exibe o formulário após a metade do vídeo
+    }
+
+    function showForm() {
+      document.getElementById('questionForm').style.display = 'block';
+      videoElement.pause(); // Pausa o vídeo enquanto o formulário é mostrado
     }
 
     function submitForm() {
-      var name = document.getElementById('userName').value;
-      var formData = document.getElementById('response').value;
-      
-      if (name && formData) {
-        // ID da sua planilha
-        var sheetId = '1hEE-HkebWSLhQHKTqceOGACyQbIPPNyRP92-YSlzvWQ';
+      const name = document.getElementById('name').value;
+      const answer = document.getElementById('answer').value;
 
-        var scriptURL = 'https://script.google.com/macros/s/SEU_SCRIPT_ID/exec'; // Substitua SEU_SCRIPT_ID pelo seu ID de script
+      // Enviar os dados para o Google Apps Script
+      google.script.run.submitFormData(name, answer);
 
-        fetch(scriptURL, {
-          method: 'POST',
-          body: new URLSearchParams({
-            'name': name,
-            'response': formData,
-            'sheetId': sheetId,
-          }),
-        }).then(response => {
-          if (response.ok) {
-            alert('Resposta enviada com sucesso!');
-            document.getElementById('questionForm').style.display = 'none';  // Esconde o formulário
-          } else {
-            alert('Erro ao enviar a resposta');
-          }
-        });
-      } else {
-        alert('Por favor, preencha todos os campos');
-      }
+      alert('Resposta enviada com sucesso!');
+      document.getElementById('questionForm').style.display = 'none'; // Esconde o formulário
+      videoElement.play(); // Retorna ao vídeo
     }
   </script>
+
+  <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.1.3/firebase-firestore.js"></script>
 </body>
 </html>
