@@ -7,73 +7,107 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .container {
-      width: 90%;
-      max-width: 800px;
-      background: white;
-      padding: 20px;
-      margin-top: 20px;
-      border-radius: 10px;
-      box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
       text-align: center;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+    h1 {
+      color: #333;
+    }
+    p {
+      color: #555;
+    }
+    .btn {
+      background-color: #ff0000;
+      color: white;
+      padding: 15px 30px;
+      font-size: 18px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      text-decoration: none;
+      margin: 10px;
+    }
+    .btn:hover {
+      background-color: #cc0000;
     }
     .logo {
       max-width: 200px;
       margin-bottom: 20px;
     }
-    .btn {
+    #videoPlayer {
+      display: none;
+      margin-top: 20px;
+    }
+    video {
+      width: 80%;
+      max-width: 800px;
+    }
+    #questionForm {
+      display: none;
+      margin-top: 20px;
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    #questionForm input, #questionForm textarea {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+    #questionForm button {
       background-color: #ff0000;
       color: white;
-      padding: 15px 20px;
-      font-size: 16px;
+      padding: 10px 20px;
       border: none;
       border-radius: 5px;
       cursor: pointer;
-      margin: 10px;
-      display: inline-block;
+      font-size: 16px;
     }
-    .btn:hover {
+    #questionForm button:hover {
       background-color: #cc0000;
-    }
-    #videoPlayer, #questionForm, .videoList {
-      display: none;
-    }
-    video {
-      width: 100%;
-      border-radius: 10px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <img src="imagens/Logo%20Bertolace.jpeg" alt="Logo Bertolace" class="logo">
-    <h1>Bem-vindo à Plataforma de Treinamento Bertolace!</h1>
-    <p>Aqui você pode acessar os vídeos de treinamento de acordo com sua área.</p>
-    <button class="btn" onclick="showVideoList('financeiro')">Acessar Vídeos Financeiro</button>
-    <button class="btn" onclick="showVideoList('rh')">Acessar Vídeos RH</button>
-    <button class="btn" onclick="goHome()">🏠 Home</button>
-  </div>
 
-  <div class="container videoList" id="videoListFinanceiro">
+  <img src="imagens/Logo%20Bertolace.jpeg" alt="Logo Bertolace" class="logo">
+  <h1>Bem-vindo à Plataforma de Treinamento Bertolace!</h1>
+  <p>Aqui você pode acessar os vídeos de treinamento de acordo com sua área.</p>
+
+  <!-- Botão para acessar os vídeos da área financeira -->
+  <button class="btn" onclick="showVideoList('financeiro')">Acessar Vídeos Financeiro</button>
+
+  <!-- Botão para acessar os vídeos da área de RH -->
+  <button class="btn" onclick="showVideoList('rh')">Acessar Vídeos RH</button>
+
+  <!-- Lista de vídeos da área de RH -->
+  <div id="videoListRh" style="display: none;">
     <h3>Escolha um vídeo:</h3>
-    <button class="btn" onclick="playVideo('videos/financeiro/Iniciante%20Excel2025.mp4', 'Aula 1 - Iniciante Excel')">Aula 1 - Iniciante Excel</button>
-    <button class="btn" onclick="playVideo('videos/financeiro/Iniciante%20Excel2025-aula2.mp4', 'Aula 2 - Iniciante Excel')">Aula 2 - Iniciante Excel</button>
+    <ul>
+      <li><button class="btn" onclick="playVideo('https://github.com/Bertolace/Treinamento-Bertolace/raw/refs/heads/main/videos/rh/rh%20introducao.mp4', 'Aula 1 - RH Introdução')">Aula 1 - RH Introdução</button></li>
+      <li><button class="btn" onclick="playVideo('https://github.com/Bertolace/Treinamento-Bertolace/raw/refs/heads/main/videos/rh/rh%20aula%202.mp4', 'Aula 2 - RH Aula 2')">Aula 2 - RH Aula 2</button></li>
+    </ul>
   </div>
 
-  <div class="container videoList" id="videoListRh">
+  <!-- Lista de vídeos da área financeira (já existente) -->
+  <div id="videoListFinanceiro" style="display: none;">
     <h3>Escolha um vídeo:</h3>
-    <button class="btn" onclick="playVideo('https://github.com/Bertolace/Treinamento-Bertolace/raw/refs/heads/main/videos/rh/rh%20introducao.mp4', 'Aula 1 - RH Introdução')">Aula 1 - RH Introdução</button>
-    <button class="btn" onclick="playVideo('https://github.com/Bertolace/Treinamento-Bertolace/raw/refs/heads/main/videos/rh/rh%20aula%202.mp4', 'Aula 2 - RH Aula 2')">Aula 2 - RH Aula 2</button>
+    <ul>
+      <li><button class="btn" onclick="playVideo('videos/financeiro/Iniciante%20Excel2025.mp4', 'Aula 1 - Iniciante Excel')">Aula 1 - Iniciante Excel</button></li>
+      <li><button class="btn" onclick="playVideo('videos/financeiro/Iniciante%20Excel2025-aula2.mp4', 'Aula 2 - Iniciante Excel')">Aula 2 - Iniciante Excel</button></li>
+    </ul>
   </div>
 
-  <div class="container" id="videoPlayer">
+  <!-- Player de vídeo -->
+  <div id="videoPlayer">
     <h2 id="videoTitle"></h2>
     <video controls id="trainingVideo">
       <source id="videoSource" type="video/mp4">
@@ -81,11 +115,12 @@
     </video>
   </div>
 
-  <div class="container" id="questionForm">
+  <!-- Formulário de respostas -->
+  <div id="questionForm">
     <h3>Descreva o que entendeu até agora sobre o vídeo:</h3>
     <input type="text" id="employeeName" placeholder="Seu nome">
     <textarea id="response" placeholder="Digite sua resposta aqui"></textarea>
-    <button class="btn" onclick="submitAnswer()">Enviar Resposta</button>
+    <button onclick="submitAnswer()">Enviar Resposta</button>
   </div>
 
   <script>
@@ -93,22 +128,37 @@
     let hasDisplayedQuestion = false;
 
     function showVideoList(area) {
-      document.querySelectorAll('.videoList').forEach(div => div.style.display = 'none');
+      // Oculta listas de vídeos e o player
+      document.getElementById("videoListFinanceiro").style.display = "none";
+      document.getElementById("videoListRh").style.display = "none";
       document.getElementById("videoPlayer").style.display = "none";
       document.getElementById("questionForm").style.display = "none";
-      document.getElementById("videoList" + area.charAt(0).toUpperCase() + area.slice(1)).style.display = "block";
+
+      // Exibe a lista de vídeos da área selecionada
+      if (area === 'financeiro') {
+        document.getElementById("videoListFinanceiro").style.display = "block";
+      } else if (area === 'rh') {
+        document.getElementById("videoListRh").style.display = "block";
+      }
     }
 
     function playVideo(videoPath, videoTitle) {
       const video = document.getElementById("trainingVideo");
-      document.getElementById("videoSource").src = videoPath;
+      const videoSource = document.getElementById("videoSource");
+
+      videoSource.src = videoPath;
       document.getElementById("videoTitle").innerText = videoTitle;
-      currentVideoTitle = videoTitle;
       document.getElementById("videoPlayer").style.display = "block";
+      document.getElementById("videoListFinanceiro").style.display = "none";
+      document.getElementById("videoListRh").style.display = "none";
+      document.getElementById("questionForm").style.display = "none";
       video.load();
       video.play();
 
+      // Resetar a exibição do formulário de respostas após o vídeo começar
       hasDisplayedQuestion = false;
+
+      // Mostrar o formulário de resposta após metade do vídeo
       video.ontimeupdate = function() {
         if (video.currentTime >= video.duration / 2 && !hasDisplayedQuestion) {
           document.getElementById("questionForm").style.display = "block";
@@ -120,6 +170,7 @@
     function submitAnswer() {
       let name = document.getElementById("employeeName").value;
       let response = document.getElementById("response").value;
+
       fetch("https://script.google.com/macros/s/AKfycbxagYDMqs42tzgqljooE4XjaZyRc-n0tD96r37S2z2WFB3xClkc6rNSktK10C77IiiE/exec", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -127,12 +178,10 @@
       }).then(() => {
         alert("Resposta enviada!");
         document.getElementById("questionForm").style.display = "none";
+        document.getElementById("trainingVideo").play();
       });
     }
-
-    function goHome() {
-      document.querySelectorAll('.videoList, #videoPlayer, #questionForm').forEach(div => div.style.display = 'none');
-    }
   </script>
+
 </body>
 </html>
