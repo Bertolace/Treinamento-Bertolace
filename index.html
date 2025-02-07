@@ -78,25 +78,21 @@
 </head>
 <body>
 
-  <!-- Logo corrigida -->
   <img src="imagens/Logo%20Bertolace.jpeg" alt="Logo Bertolace" class="logo">
   <h1>Bem-vindo à Plataforma de Treinamento Bertolace!</h1>
   <p>Aqui você pode acessar os vídeos de treinamento de acordo com sua área.</p>
 
-  <!-- Botões de vídeo -->
   <button class="btn" onclick="playVideo('videos/financeiro/Iniciante%20Excel2025.mp4', 'Aula 1 - Iniciante Excel')">Acessar Vídeo Financeiro</button>
   <button class="btn" onclick="playVideo('videos/rh/rh%20introducao.mp4', 'Aula 1 - Iniciante RH')">Acessar Vídeo RH</button>
 
-  <!-- Exibição do título e vídeo -->
-  <div id="videoPlayer" style="display: none;">
-    <h2 id="videoTitle"></h2> <!-- Título dinâmico do vídeo -->
+  <div id="videoPlayer">
+    <h2 id="videoTitle"></h2>
     <video controls id="trainingVideo">
       <source id="videoSource" type="video/mp4">
       Seu navegador não suporta o elemento de vídeo.
     </video>
   </div>
 
-  <!-- Formulário de resposta -->
   <div id="questionForm">
     <h3>Descreva o que entendeu até agora sobre o vídeo:</h3>
     <input type="text" id="employeeName" placeholder="Seu nome">
@@ -105,22 +101,20 @@
   </div>
 
   <script>
+    let currentVideoTitle = "";
     let hasDisplayedQuestion = false;
-    let currentVideoTitle = ''; // Variável para armazenar o título do vídeo atual
 
-    // Função para tocar o vídeo e exibir o título
     function playVideo(videoPath, videoTitle) {
       const video = document.getElementById("trainingVideo");
       const videoSource = document.getElementById("videoSource");
       videoSource.src = videoPath;
       
-      document.getElementById("videoTitle").innerText = videoTitle; // Define o título
-      document.getElementById("videoPlayer").style.display = "block"; // Exibe o player
-      document.getElementById("questionForm").style.display = "none"; // Oculta o formulário
+      document.getElementById("videoTitle").innerText = videoTitle;
+      currentVideoTitle = videoTitle; 
+      document.getElementById("videoPlayer").style.display = "block";
+      document.getElementById("questionForm").style.display = "none";
       video.load();
       video.play();
-      
-      currentVideoTitle = videoTitle; // Armazena o título do vídeo atual
 
       video.addEventListener("timeupdate", function () {
         let halfway = video.duration / 2;
@@ -132,25 +126,18 @@
       });
     }
 
-    // Função para enviar a resposta
     function submitAnswer() {
       let name = document.getElementById("employeeName").value;
       let response = document.getElementById("response").value;
-      let videoTitle = currentVideoTitle; // Obtém o título atual do vídeo
-
-      // Verifica se o título do vídeo foi corretamente obtido
-      console.log('Título do vídeo:', videoTitle);
 
       fetch("https://script.google.com/macros/s/AKfycbxagYDMqs42tzgqljooE4XjaZyRc-n0tD96r37S2z2WFB3xClkc6rNSktK10C77IiiE/exec", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `name=${encodeURIComponent(name)}&response=${encodeURIComponent(response)}&videoTitle=${encodeURIComponent(videoTitle)}`
+        body: `name=${encodeURIComponent(name)}&response=${encodeURIComponent(response)}&videoTitle=${encodeURIComponent(currentVideoTitle)}`
       }).then(() => {
         alert("Resposta enviada!");
         document.getElementById("questionForm").style.display = "none";
         document.getElementById("trainingVideo").play();
-      }).catch(error => {
-        console.error('Erro ao enviar a resposta:', error);
       });
     }
   </script>
