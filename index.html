@@ -97,7 +97,7 @@
   <!-- Player de vídeo -->
   <div id="videoPlayer">
     <h2 id="videoTitle"></h2>
-    <video controls id="trainingVideo" onended="showQuestionForm()" onpause="showQuestionForm()">
+    <video controls id="trainingVideo" onended="showQuestionForm()" onpause="showQuestionForm()" ontimeupdate="checkMidway()">
       <source id="videoSource" type="video/mp4">
       Seu navegador não suporta o elemento de vídeo.
     </video>
@@ -113,6 +113,7 @@
 
   <script>
     let currentVideoTitle = "";  // Variável para armazenar o título do vídeo atual
+    let videoPlayedHalf = false; // Controla se a metade do vídeo foi alcançada
 
     function showVideoList() {
       // Exibe a lista de vídeos e oculta o player de vídeo e o formulário de respostas
@@ -140,6 +141,21 @@
 
       // Armazena o título do vídeo atual
       currentVideoTitle = videoTitle;
+
+      // Reseta a variável para garantir que a metade do vídeo seja detectada novamente
+      videoPlayedHalf = false;
+    }
+
+    function checkMidway() {
+      const video = document.getElementById("trainingVideo");
+      const videoDuration = video.duration;
+      const currentTime = video.currentTime;
+
+      // Se o vídeo tiver alcançado metade de sua duração e ainda não tiver exibido o formulário
+      if (currentTime >= videoDuration / 2 && !videoPlayedHalf) {
+        videoPlayedHalf = true; // Marca que a metade já foi atingida
+        showQuestionForm(); // Exibe o formulário de resposta
+      }
     }
 
     function showQuestionForm() {
