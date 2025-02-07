@@ -82,10 +82,8 @@
   <h1>Bem-vindo à Plataforma de Treinamento Bertolace!</h1>
   <p>Aqui você pode acessar os vídeos de treinamento de acordo com sua área.</p>
 
-  <!-- Botão para exibir lista de vídeos -->
   <button class="btn" onclick="showVideoList()">Acessar Vídeos Financeiro</button>
 
-  <!-- Lista de vídeos (inicialmente oculta) -->
   <div id="videoList" style="display: none;">
     <h3>Escolha um vídeo:</h3>
     <ul>
@@ -94,16 +92,14 @@
     </ul>
   </div>
 
-  <!-- Player de vídeo -->
   <div id="videoPlayer">
     <h2 id="videoTitle"></h2>
-    <video controls id="trainingVideo" onended="showQuestionForm()" onpause="showQuestionForm()" ontimeupdate="checkMidway()">
+    <video controls id="trainingVideo">
       <source id="videoSource" type="video/mp4">
       Seu navegador não suporta o elemento de vídeo.
     </video>
   </div>
 
-  <!-- Formulário para resposta -->
   <div id="questionForm">
     <h3>Descreva o que entendeu até agora sobre o vídeo:</h3>
     <input type="text" id="employeeName" placeholder="Seu nome">
@@ -112,11 +108,10 @@
   </div>
 
   <script>
-    let currentVideoTitle = "";  // Variável para armazenar o título do vídeo atual
-    let videoPlayedHalf = false; // Controla se a metade do vídeo foi alcançada
+    let currentVideoTitle = "";
+    let hasDisplayedQuestion = false;
 
     function showVideoList() {
-      // Exibe a lista de vídeos e oculta o player de vídeo e o formulário de respostas
       document.getElementById("videoList").style.display = "block";
       document.getElementById("videoPlayer").style.display = "none";
       document.getElementById("questionForm").style.display = "none";
@@ -126,49 +121,30 @@
       const video = document.getElementById("trainingVideo");
       const videoSource = document.getElementById("videoSource");
 
-      // Define o caminho do vídeo e o título
       videoSource.src = videoPath;
       document.getElementById("videoTitle").innerText = videoTitle;
-
-      // Exibe o player de vídeo e oculta a lista de vídeos
       document.getElementById("videoPlayer").style.display = "block";
       document.getElementById("videoList").style.display = "none";
       document.getElementById("questionForm").style.display = "none";
-
-      // Carrega e toca o vídeo
       video.load();
       video.play();
 
-      // Armazena o título do vídeo atual
-      currentVideoTitle = videoTitle;
+      // Resetando a variável para garantir que o formulário só seja exibido uma vez
+      hasDisplayedQuestion = false;
 
-      // Reseta a variável para garantir que a metade do vídeo seja detectada novamente
-      videoPlayedHalf = false;
-    }
-
-    function checkMidway() {
-      const video = document.getElementById("trainingVideo");
-      const videoDuration = video.duration;
-      const currentTime = video.currentTime;
-
-      // Se o vídeo tiver alcançado metade de sua duração e ainda não tiver exibido o formulário
-      if (currentTime >= videoDuration / 2 && !videoPlayedHalf) {
-        videoPlayedHalf = true; // Marca que a metade já foi atingida
-        showQuestionForm(); // Exibe o formulário de resposta
-      }
-    }
-
-    function showQuestionForm() {
-      // Exibe o formulário para que o usuário possa responder
-      document.getElementById("questionForm").style.display = "block";
-      document.getElementById("videoPlayer").style.display = "none";
+      // Verificando quando o vídeo atingir 50% de sua duração
+      video.ontimeupdate = function() {
+        if (video.currentTime >= video.duration / 2 && !hasDisplayedQuestion) {
+          document.getElementById("questionForm").style.display = "block";
+          hasDisplayedQuestion = true;
+        }
+      };
     }
 
     function submitAnswer() {
       let name = document.getElementById("employeeName").value;
       let response = document.getElementById("response").value;
 
-      // Envia os dados para a planilha
       fetch("https://script.google.com/macros/s/AKfycbxagYDMqs42tzgqljooE4XjaZyRc-n0tD96r37S2z2WFB3xClkc6rNSktK10C77IiiE/exec", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
