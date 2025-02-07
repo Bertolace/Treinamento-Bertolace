@@ -97,7 +97,7 @@
   <!-- Player de vídeo -->
   <div id="videoPlayer">
     <h2 id="videoTitle"></h2>
-    <video controls id="trainingVideo">
+    <video controls id="trainingVideo" onended="showQuestionForm()" onpause="showQuestionForm()">
       <source id="videoSource" type="video/mp4">
       Seu navegador não suporta o elemento de vídeo.
     </video>
@@ -142,9 +142,28 @@
       currentVideoTitle = videoTitle;
     }
 
+    function showQuestionForm() {
+      // Exibe o formulário para que o usuário possa responder
+      document.getElementById("questionForm").style.display = "block";
+      document.getElementById("videoPlayer").style.display = "none";
+    }
+
     function submitAnswer() {
       let name = document.getElementById("employeeName").value;
       let response = document.getElementById("response").value;
 
       // Envia os dados para a planilha
-      fetch("https://script.google.com/macros/s/AKfy
+      fetch("https://script.google.com/macros/s/AKfycbxagYDMqs42tzgqljooE4XjaZyRc-n0tD96r37S2z2WFB3xClkc6rNSktK10C77IiiE/exec", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: `name=${encodeURIComponent(name)}&response=${encodeURIComponent(response)}&videoTitle=${encodeURIComponent(currentVideoTitle)}`
+      }).then(() => {
+        alert("Resposta enviada!");
+        document.getElementById("questionForm").style.display = "none";
+        document.getElementById("trainingVideo").play();
+      });
+    }
+  </script>
+
+</body>
+</html>
