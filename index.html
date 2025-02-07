@@ -82,8 +82,15 @@
   <h1>Bem-vindo à Plataforma de Treinamento Bertolace!</h1>
   <p>Aqui você pode acessar os vídeos de treinamento de acordo com sua área.</p>
 
-  <button class="btn" onclick="playVideo('videos/financeiro/Iniciante%20Excel2025.mp4', 'Aula 1 - Iniciante Excel')">Acessar Vídeo Financeiro</button>
-  <button class="btn" onclick="playVideo('videos/rh/rh%20introducao.mp4', 'Aula 1 - Iniciante RH')">Acessar Vídeo RH</button>
+  <button class="btn" onclick="showVideoList()">Acessar Vídeos Financeiro</button>
+
+  <div id="videoList" style="display: none;">
+    <h3>Escolha um vídeo:</h3>
+    <ul>
+      <li><button class="btn" onclick="playVideo('videos/financeiro/Iniciante%20Excel2025.mp4', 'Aula 1 - Iniciante Excel')">Aula 1 - Iniciante Excel</button></li>
+      <li><button class="btn" onclick="playVideo('videos/financeiro/Iniciante%20Excel2025-aula2.mp4', 'Aula 2 - Iniciante Excel')">Aula 2 - Iniciante Excel</button></li>
+    </ul>
+  </div>
 
   <div id="videoPlayer">
     <h2 id="videoTitle"></h2>
@@ -104,26 +111,23 @@
     let currentVideoTitle = "";
     let hasDisplayedQuestion = false;
 
+    function showVideoList() {
+      document.getElementById("videoList").style.display = "block";
+      document.getElementById("videoPlayer").style.display = "none";
+      document.getElementById("questionForm").style.display = "none";
+    }
+
     function playVideo(videoPath, videoTitle) {
       const video = document.getElementById("trainingVideo");
       const videoSource = document.getElementById("videoSource");
+
       videoSource.src = videoPath;
-      
       document.getElementById("videoTitle").innerText = videoTitle;
-      currentVideoTitle = videoTitle; 
       document.getElementById("videoPlayer").style.display = "block";
+      document.getElementById("videoList").style.display = "none";
       document.getElementById("questionForm").style.display = "none";
       video.load();
       video.play();
-
-      video.addEventListener("timeupdate", function () {
-        let halfway = video.duration / 2;
-        if (video.currentTime >= halfway && !hasDisplayedQuestion) {
-          hasDisplayedQuestion = true;
-          video.pause();
-          document.getElementById("questionForm").style.display = "block";
-        }
-      });
     }
 
     function submitAnswer() {
