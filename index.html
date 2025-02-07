@@ -112,6 +112,8 @@
   </div>
 
   <script>
+    let currentVideoTitle = "";  // Variável para armazenar o título do vídeo atual
+
     function showVideoList() {
       // Exibe a lista de vídeos e oculta o player de vídeo e o formulário de respostas
       document.getElementById("videoList").style.display = "block";
@@ -135,6 +137,9 @@
       // Carrega e toca o vídeo
       video.load();
       video.play();
+
+      // Armazena o título do vídeo atual
+      currentVideoTitle = videoTitle;
     }
 
     function submitAnswer() {
@@ -142,17 +147,4 @@
       let response = document.getElementById("response").value;
 
       // Envia os dados para a planilha
-      fetch("https://script.google.com/macros/s/AKfycbxagYDMqs42tzgqljooE4XjaZyRc-n0tD96r37S2z2WFB3xClkc6rNSktK10C77IiiE/exec", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `name=${encodeURIComponent(name)}&response=${encodeURIComponent(response)}&videoTitle=${encodeURIComponent(currentVideoTitle)}`
-      }).then(() => {
-        alert("Resposta enviada!");
-        document.getElementById("questionForm").style.display = "none";
-        document.getElementById("trainingVideo").play();
-      });
-    }
-  </script>
-
-</body>
-</html>
+      fetch("https://script.google.com/macros/s/AKfy
