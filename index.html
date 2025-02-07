@@ -82,30 +82,31 @@
   <h1>Bem-vindo à Plataforma de Treinamento Bertolace!</h1>
   <p>Aqui você pode acessar os vídeos de treinamento de acordo com sua área.</p>
 
-  <!-- Botão para acessar vídeos Financeiro -->
+  <!-- Botão para acessar os vídeos da área financeira -->
   <button class="btn" onclick="showVideoList('financeiro')">Acessar Vídeos Financeiro</button>
 
-  <!-- Botão para acessar vídeos RH -->
+  <!-- Botão para acessar os vídeos da área de RH -->
   <button class="btn" onclick="showVideoList('rh')">Acessar Vídeos RH</button>
 
-  <!-- Lista de vídeos Financeiro -->
-  <div id="videoList" style="display: none;">
-    <h3>Escolha um vídeo de Financeiro:</h3>
+  <!-- Lista de vídeos da área de RH -->
+  <div id="videoListRh" style="display: none;">
+    <h3>Escolha um vídeo:</h3>
+    <ul>
+      <li><button class="btn" onclick="playVideo('https://github.com/Bertolace/Treinamento-Bertolace/raw/refs/heads/main/videos/rh/rh%20introducao.mp4', 'Aula 1 - RH Introdução')">Aula 1 - RH Introdução</button></li>
+      <li><button class="btn" onclick="playVideo('https://github.com/Bertolace/Treinamento-Bertolace/raw/refs/heads/main/videos/rh/rh%20aula%202.mp4', 'Aula 2 - RH Aula 2')">Aula 2 - RH Aula 2</button></li>
+    </ul>
+  </div>
+
+  <!-- Lista de vídeos da área financeira (já existente) -->
+  <div id="videoListFinanceiro" style="display: none;">
+    <h3>Escolha um vídeo:</h3>
     <ul>
       <li><button class="btn" onclick="playVideo('videos/financeiro/Iniciante%20Excel2025.mp4', 'Aula 1 - Iniciante Excel')">Aula 1 - Iniciante Excel</button></li>
       <li><button class="btn" onclick="playVideo('videos/financeiro/Iniciante%20Excel2025-aula2.mp4', 'Aula 2 - Iniciante Excel')">Aula 2 - Iniciante Excel</button></li>
     </ul>
   </div>
 
-  <!-- Lista de vídeos RH -->
-  <div id="videoList-rh" style="display: none;">
-    <h3>Escolha um vídeo de RH:</h3>
-    <ul>
-      <li><button class="btn" onclick="playVideo('videos/rh/Introducao%20RH.mp4', 'Aula 1 - Introdução RH')">Aula 1 - Introdução RH</button></li>
-      <li><button class="btn" onclick="playVideo('videos/rh/Aula2%20RH.mp4', 'Aula 2 - RH')">Aula 2 - RH</button></li>
-    </ul>
-  </div>
-
+  <!-- Player de vídeo -->
   <div id="videoPlayer">
     <h2 id="videoTitle"></h2>
     <video controls id="trainingVideo">
@@ -114,6 +115,7 @@
     </video>
   </div>
 
+  <!-- Formulário de respostas -->
   <div id="questionForm">
     <h3>Descreva o que entendeu até agora sobre o vídeo:</h3>
     <input type="text" id="employeeName" placeholder="Seu nome">
@@ -122,21 +124,22 @@
   </div>
 
   <script>
+    let currentVideoTitle = "";
+    let hasDisplayedQuestion = false;
+
     function showVideoList(area) {
-      // Esconde todas as listas de vídeos
-      document.getElementById("videoList").style.display = "none";
-      document.getElementById("videoList-rh").style.display = "none";
-
-      // Exibe a lista de vídeos de acordo com a área selecionada
-      if (area === 'rh') {
-        document.getElementById("videoList-rh").style.display = "block";
-      } else {
-        document.getElementById("videoList").style.display = "block";
-      }
-
-      // Esconde o player de vídeo e o formulário de resposta
+      // Oculta listas de vídeos e o player
+      document.getElementById("videoListFinanceiro").style.display = "none";
+      document.getElementById("videoListRh").style.display = "none";
       document.getElementById("videoPlayer").style.display = "none";
       document.getElementById("questionForm").style.display = "none";
+
+      // Exibe a lista de vídeos da área selecionada
+      if (area === 'financeiro') {
+        document.getElementById("videoListFinanceiro").style.display = "block";
+      } else if (area === 'rh') {
+        document.getElementById("videoListRh").style.display = "block";
+      }
     }
 
     function playVideo(videoPath, videoTitle) {
@@ -146,11 +149,22 @@
       videoSource.src = videoPath;
       document.getElementById("videoTitle").innerText = videoTitle;
       document.getElementById("videoPlayer").style.display = "block";
-      document.getElementById("videoList").style.display = "none";
-      document.getElementById("videoList-rh").style.display = "none";
+      document.getElementById("videoListFinanceiro").style.display = "none";
+      document.getElementById("videoListRh").style.display = "none";
       document.getElementById("questionForm").style.display = "none";
       video.load();
       video.play();
+
+      // Resetar a exibição do formulário de respostas após o vídeo começar
+      hasDisplayedQuestion = false;
+
+      // Mostrar o formulário de resposta após metade do vídeo
+      video.ontimeupdate = function() {
+        if (video.currentTime >= video.duration / 2 && !hasDisplayedQuestion) {
+          document.getElementById("questionForm").style.display = "block";
+          hasDisplayedQuestion = true;
+        }
+      };
     }
 
     function submitAnswer() {
@@ -160,7 +174,7 @@
       fetch("https://script.google.com/macros/s/AKfycbxagYDMqs42tzgqljooE4XjaZyRc-n0tD96r37S2z2WFB3xClkc6rNSktK10C77IiiE/exec", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `name=${encodeURIComponent(name)}&response=${encodeURIComponent(response)}&videoTitle=${encodeURIComponent(document.getElementById("videoTitle").innerText)}`
+        body: `name=${encodeURIComponent(name)}&response=${encodeURIComponent(response)}&videoTitle=${encodeURIComponent(currentVideoTitle)}`
       }).then(() => {
         alert("Resposta enviada!");
         document.getElementById("questionForm").style.display = "none";
