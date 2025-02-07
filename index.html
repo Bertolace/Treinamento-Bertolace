@@ -108,7 +108,6 @@
   </div>
 
   <script>
-    let currentVideoTitle = "";
     let hasDisplayedQuestion = false;
 
     function showVideoList() {
@@ -132,7 +131,7 @@
       // Resetando a variável para garantir que o formulário só seja exibido uma vez
       hasDisplayedQuestion = false;
 
-      // Verificando quando o vídeo atingir 50% de sua duração
+      // Verificando quando o vídeo atingir 50% da duração
       video.ontimeupdate = function() {
         if (video.currentTime >= video.duration / 2 && !hasDisplayedQuestion) {
           document.getElementById("questionForm").style.display = "block";
@@ -148,7 +147,7 @@
       fetch("https://script.google.com/macros/s/AKfycbxagYDMqs42tzgqljooE4XjaZyRc-n0tD96r37S2z2WFB3xClkc6rNSktK10C77IiiE/exec", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `name=${encodeURIComponent(name)}&response=${encodeURIComponent(response)}&videoTitle=${encodeURIComponent(currentVideoTitle)}`
+        body: `name=${encodeURIComponent(name)}&response=${encodeURIComponent(response)}&videoTitle=${encodeURIComponent(videoTitle)}`
       }).then(() => {
         alert("Resposta enviada!");
         document.getElementById("questionForm").style.display = "none";
