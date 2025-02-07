@@ -83,16 +83,20 @@
   <h1>Bem-vindo à Plataforma de Treinamento Bertolace!</h1>
   <p>Aqui você pode acessar os vídeos de treinamento de acordo com sua área.</p>
 
-  <button class="btn" onclick="playVideo('videos/financeiro/Iniciante%20Excel2025.mp4')">Acessar Vídeo Financeiro</button>
-  <button class="btn" onclick="playVideo('videos/rh/rh%20introducao.mp4')">Acessar Vídeo RH</button>
+  <!-- Botões de vídeo -->
+  <button class="btn" onclick="playVideo('videos/financeiro/Iniciante%20Excel2025.mp4', 'Título do Vídeo Financeiro')">Acessar Vídeo Financeiro</button>
+  <button class="btn" onclick="playVideo('videos/rh/rh%20introducao.mp4', 'Título do Vídeo RH')">Acessar Vídeo RH</button>
 
-  <div id="videoPlayer">
+  <!-- Exibição do título e vídeo -->
+  <div id="videoPlayer" style="display: none;">
+    <h2 id="videoTitle"></h2> <!-- Título dinâmico do vídeo -->
     <video controls id="trainingVideo">
       <source id="videoSource" type="video/mp4">
       Seu navegador não suporta o elemento de vídeo.
     </video>
   </div>
 
+  <!-- Formulário de resposta -->
   <div id="questionForm">
     <h3>Descreva o que entendeu até agora sobre o vídeo:</h3>
     <input type="text" id="employeeName" placeholder="Seu nome">
@@ -103,12 +107,14 @@
   <script>
     let hasDisplayedQuestion = false;
 
-    function playVideo(videoPath) {
+    // Função para tocar o vídeo e exibir o título
+    function playVideo(videoPath, videoTitle) {
       const video = document.getElementById("trainingVideo");
       const videoSource = document.getElementById("videoSource");
       videoSource.src = videoPath;
       
-      document.getElementById("videoPlayer").style.display = "block";
+      document.getElementById("videoTitle").innerText = videoTitle; // Define o título
+      document.getElementById("videoPlayer").style.display = "block"; // Exibe o player
       video.load();
       video.play();
 
@@ -122,6 +128,7 @@
       });
     }
 
+    // Função para enviar a resposta
     function submitAnswer() {
       let name = document.getElementById("employeeName").value;
       let response = document.getElementById("response").value;
