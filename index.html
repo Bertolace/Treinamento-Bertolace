@@ -106,6 +106,7 @@
 
   <script>
     let hasDisplayedQuestion = false;
+    let currentVideoTitle = ''; // Variável para armazenar o título do vídeo atual
 
     // Função para tocar o vídeo e exibir o título
     function playVideo(videoPath, videoTitle) {
@@ -115,9 +116,11 @@
       
       document.getElementById("videoTitle").innerText = videoTitle; // Define o título
       document.getElementById("videoPlayer").style.display = "block"; // Exibe o player
-      document.getElementById("questionForm").style.display = "none"; // Omiteo o formulario
+      document.getElementById("questionForm").style.display = "none"; // Oculta o formulário
       video.load();
       video.play();
+      
+      currentVideoTitle = videoTitle; // Armazena o título do vídeo atual
 
       video.addEventListener("timeupdate", function () {
         let halfway = video.duration / 2;
@@ -137,7 +140,7 @@
       fetch("https://script.google.com/macros/s/AKfycbxagYDMqs42tzgqljooE4XjaZyRc-n0tD96r37S2z2WFB3xClkc6rNSktK10C77IiiE/exec", {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: `name=${encodeURIComponent(name)}&response=${encodeURIComponent(response)}`
+        body: `name=${encodeURIComponent(name)}&response=${encodeURIComponent(response)}&videoTitle=${encodeURIComponent(currentVideoTitle)}`
       }).then(() => {
         alert("Resposta enviada!");
         document.getElementById("questionForm").style.display = "none";
